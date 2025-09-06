@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fritzy.Ai - Personal Portfolio</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Feather Icons for icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        /*
+        -------------------
+        EDIT YOUR THEME HERE
+        -------------------
+        */
+        :root {
+            /* Dark theme with violet accents */
+            --primary-color: #8b5cf6; /* Violet */
+            --secondary-color: #14b8a6; /* Teal */
+            --background-color: #111827; /* Gray 900 */
+            --surface-color: #1f2937; /* Gray 800 */
+            --text-color: #d1d5db; /* Gray 300 */
+            --heading-color: #f9fafb; /* Gray 50 */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        
+        /* --- Scrollbar Removal --- */
+        /* For WebKit browsers (Chrome, Safari, Edge) */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* For Firefox */
+        body {
+            scrollbar-width: none;
+        }
+
+        /* Applying custom theme colors to Tailwind classes */
+        .text-primary { color: var(--primary-color); }
+        .bg-primary { background-color: var(--primary-color); }
+        .hover\:bg-primary-dark:hover { background-color: #7c3aed; } /* Darker Violet */
+        
+        .text-secondary { color: var(--secondary-color); }
+        .bg-secondary { background-color: var(--secondary-color); }
+        .hover\:bg-secondary-dark:hover { background-color: #0d9488; } /* Darker Teal */
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--heading-color);
+            font-weight: 700;
+        }
+
+        .section-title {
+            @apply text-3xl md:text-4xl font-bold text-center mb-12;
+        }
+        
+        .nav-link {
+            @apply text-gray-300 hover:text-primary transition-colors duration-300 font-medium;
+        }
+
+        .project-card {
+            /* Enhanced project card hover effect for dark theme */
+            @apply bg-slate-800 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-all duration-300 ease-in-out hover:shadow-violet-500/20 hover:shadow-2xl;
+        }
+        
+        /* Styles for fade-in on scroll animation */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(2rem);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Animated Background --- */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Places the animation behind all content */
+            overflow: hidden;
+        }
+
+        .background-animation span {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(139, 92, 246, 0.15); /* Faded primary color (violet), more visible */
+            animation: animate-bg 25s linear infinite;
+            bottom: -150px; /* Start below the screen */
+            border-radius: 8px; /* Slightly rounded squares */
+        }
+
+        /* Individual styles for each animated shape */
+        .background-animation span:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+        .background-animation span:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
+        .background-animation span:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+        .background-animation span:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+        .background-animation span:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+        .background-animation span:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; background: rgba(20, 184, 166, 0.15); /* Faded secondary color (teal), more visible */ }
+        .background-animation span:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
+        .background-animation span:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+        .background-animation span:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; background: rgba(20, 184, 166, 0.2); /* Faded secondary color (teal) */ }
+        .background-animation span:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+
+        @keyframes animate-bg {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Welcome page specific styles */
+        #welcome-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 100;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #welcome-page.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #main-content {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        #main-content.visible {
+            opacity: 1;
+        }
+
+        /* Chatbot specific styles */
+        .chatbot-container {
+            @apply flex flex-col p-6 h-[650px] rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-shadow duration-300;
+            background-color: var(--surface-color);
+        }
+
+        .chat-log {
+            @apply flex-grow overflow-y-auto pr-2 mb-4 space-y-4;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) transparent;
+        }
+
+        .chat-log::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-log::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        .chat-log::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        .message {
+            @apply max-w-[85%] rounded-lg p-3 shadow-md;
+        }
+
+        .message.user {
+            @apply bg-gray-700 text-gray-100 ml-auto;
+        }
+
+        .message.ai {
+            @apply bg-gray-800 text-gray-300 mr-auto;
+        }
+
+        .chat-input-area {
+            @apply flex items-center space-x-2;
+        }
+
+        .chat-input {
+            @apply flex-grow bg-gray-700 text-gray-200 border-2 border-gray-600 rounded-lg py-2 px-4 focus:outline-none focus:border-primary transition-colors;
+        }
+        
+        .send-button {
+            @apply bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-dark transition-all duration-300;
+        }
+
+        .loading-dots span {
+            animation: bounce 1s infinite;
+        }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Modal specific styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease-in-out;
+            position: relative;
+        }
+
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            z-index: 101;
+        }
+    </style>
+</head>
+
+<body class="antialiased overflow-x-hidden">
+
+    <!-- Progress Bar -->
+    <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-primary z-50 transition-all duration-300" style="width: 0%;"></div>
+
+    <!-- Animated Background Container -->
+    <div class="background-animation">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <!-- Welcome Page -->
+    <div id="welcome-page" class="bg-gray-900/90 backdrop-blur-sm">
+        <div class="max-w-xl p-8 rounded-lg">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-primary mb-4 animate-pulse">Welcome!</h1>
+            <p class="text-xl md:text-2xl text-gray-400 mb-8">
+                I'm Fritz Gerald Daseco, a creative web developer.
+            </p>
+            <button id="proceed-button" class="bg-primary text-white font-semibold px-8 py-3 rounded-lg hover:bg-primary-dark transition-all duration-300 inline-block transform hover:-translate-y-1 hover:shadow-lg hover:shadow-violet-500/50 text-lg">
+                Proceed to Portfolio
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div id="main-content">
+        <!-- Header & Navigation -->
+        <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <!-- EDIT YOUR NAME/LOGO HERE -->
+                <a href="#" class="text-2xl font-bold text-primary">Fritz Gerald Daseco</a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#ai-assistant" class="nav-link flex items-center space-x-1"> <i data-feather="cpu" class="w-4 h-4"></i> <span>AI Assistant</span> </a>
+                    <a href="#projects" class="nav-link">Projects</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </div>
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="md:hidden">
+                    <i data-feather="menu" class="text-gray-300"></i>
+                </button>
+            </nav>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden bg-gray-800">
+                <a href="#about" class="block py-2 px-6 text-sm text-gray-200 hover:bg-gray-700">About</a>
+                <a href="#ai-assistant" class="flex items-center space-x-2 py-2 px-6 text-sm text-gray-200 hover:bg-gray-700"> <i data-feather="cpu" class="w-4 h-4"></i> <span>AI Assistant</span> </a>
+                <a href="#projects" class="block py-2 px-6 text-sm text-gray-200 hover:bg-gray-700">Projects</a>
+                <a href="#contact" class="block py-2 px-6 text-sm text-gray-200 hover:bg-gray-700">Contact</a>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-6 pt-24 overflow-x-hidden relative z-10">
+
+            <!-- About Me Section -->
+            <section id="about" class="py-20 fade-in-section border-t border-gray-700">
+                <h2 class="section-title">About Me</h2>
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/3">
+                        <!-- EDIT THE 'src' TO YOUR IMAGE URL. Use a square image for best results. -->
+                        <img src="https://scontent.fmnl2-2.fna.fbcdn.net/v/t39.30808-6/542126523_1485907699397587_6759796085626845231_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeF69OSB8HlwAZsItNZicBNarwGn6d9lYPavAafp32Vg9pjFm7SuJU6gjMB2UoR3Z8C8umeecXtk6cZVQgBIiqvd&_nc_ohc=xbetF-3owbgQ7kNvwGqhvqF&_nc_oc=AdkfhwWvIsgbojjRQaLEui4iOxdpUOZ_o57AgYIHPjtuLF9LXx2P4I8WvCOTkySGcF50ntyI6ndhnXDN-k-4e5AB&_nc_zt=23&_nc_ht=scontent.fmnl2-2.fna&_nc_gid=QlH-EoYB_aOJbBZzCTzWwA&oh=00_AfbEK1O0VNQVG6ANPHveGQ8cOviGYvr95RTWVaqthwm1vA&oe=68C18DF6" alt="Your Name" class="rounded-full shadow-lg mx-auto border-4 border-slate-700">
+                    </div>
+                    <!-- This div now has the hover effect -->
+                    <div class="md:w-2/3 transform hover:scale-[1.01] transition-transform duration-300">
+                        <!-- EDIT YOUR BIO HERE -->
+                        <h3 class="text-2xl font-semibold mb-4">Hello! I'm FritzyBoy.</h3>
+                        <p class="mb-4">
+                            I am a passionate web developer with a love for creating beautiful, intuitive, and high-performance web applications. My journey into the world of code started with a simple "Hello, World!" and has since grown into a full-fledged passion for technology and design.
+                        </p>
+                        <p class="mb-6">
+                            I specialize in front-end development using modern technologies like React and Tailwind CSS, but I'm always eager to learn new things. When I'm not coding, you can find me exploring new hiking trails, trying out new coffee shops, or reading a good book.
+                        </p>
+                        <!-- EDIT YOUR SKILLS. Add or remove as needed. -->
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-violet-500/20 text-violet-300 text-sm font-medium px-3 py-1 rounded-full">HTML5</span>
+                            <span class="bg-teal-500/20 text-teal-300 text-sm font-medium px-3 py-1 rounded-full">CSS3 & Tailwind</span>
+                            <span class="bg-sky-500/20 text-sky-300 text-sm font-medium px-3 py-1 rounded-full">JavaScript (ES6+)</span>
+                            <span class="bg-rose-500/20 text-rose-300 text-sm font-medium px-3 py-1 rounded-full">React</span>
+                            <span class="bg-amber-500/20 text-amber-300 text-sm font-medium px-3 py-1 rounded-full">UI/UX Design</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NEW: AI Assistant Section -->
+            <section id="ai-assistant" class="py-20 bg-gray-900/70 backdrop-blur-sm -mx-6 px-6 fade-in-section border-t border-gray-700">
+                <h2 class="section-title">Ask Fritzy.Ai</h2>
+                <p class="max-w-3xl mx-auto text-center mb-8">
+                    Need a quick answer about my skills, projects, or availability? Ask my AI assistant! It's been trained on the information found on this page.
+                </p>
+                
+                <div class="bg-slate-800 p-8 md:p-12 rounded-xl shadow-lg">
+                    <div id="ai-intro" class="text-center">
+                        <button id="start-chat-button" class="bg-primary text-white font-semibold px-8 py-3 rounded-lg hover:bg-primary-dark transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-violet-500/50">
+                            Start Chat
+                        </button>
+                    </div>
+
+                    <div id="ai-chat-interface" class="hidden chatbot-container">
+                        <div id="chat-log" class="chat-log">
+                            <!-- Chat messages will be dynamically added here -->
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="user-input" class="chat-input" placeholder="Ask me something...">
+                            <button id="send-button" class="send-button">
+                                <i data-feather="send" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="py-20 bg-gray-900/70 backdrop-blur-sm -mx-6 px-6 fade-in-section border-t border-gray-700">
+                <h2 class="section-title">My Projects</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- PROJECT 1: COPY AND PASTE THIS BLOCK TO ADD MORE PROJECTS -->
+                    <div class="project-card cursor-pointer transform hover:scale-105 transition-transform duration-300" data-project="project-1">
+                        <img src="https://www.simplilearn.com/ice9/free_resources_article_thumb/Cutting_Edge_Innovative_AI_Project_Ideas.jpg" alt="Project 1 Screenshot" class="w-full h-48 object-cover rounded-t-xl">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">AI ENCHANCEMENT</h3>
+                            <p class="text-sm text-gray-400 mb-4">Enchancing AI, for its fully potential and maintaining its accuracy, while developing.</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-md">React</span>
+                                <span class="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-md">Firebase</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END OF PROJECT 1 -->
+
+                    <!-- PROJECT 2 -->
+                    <div class="project-card cursor-pointer transform hover:scale-105 transition-transform duration-300" data-project="project-2">
+                        <img src="https://blog.latium.org/wp-content/uploads/2022/09/2e948896757753.5eb58c727d672-1024x708.png" alt="Project 2 Screenshot" alt="Project 2 Screenshot" class="w-full h-48 object-cover rounded-t-xl">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">UI</h3>
+                            <p class="text-sm text-gray-400 mb-4">Designing Ui for Web or Applications, to make it more user friendly and interactive</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-md">D3.js</span>
+                                <span class="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-md">Node.js</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROJECT 3 -->
+                    <div class="project-card cursor-pointer transform hover:scale-105 transition-transform duration-300" data-project="project-3">
+                        <img src="https://thfvnext.bing.com/th?id=OIF.edK%2b8Kq9mGDT%2bAGxuWFmAg&cb=thfvnext&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Project 3 Screenshot" class="w-full h-48 object-cover rounded-t-xl">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">Flood control</h3>
+                            <p class="text-sm text-gray-400 mb-4">This projects allow me to buy some luxury cars and other things using peoples money.HAHAHAHAHA LMAO</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-md">Next.js</span>
+                                <span class="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-md">Stripe</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact" class="py-20 text-center fade-in-section border-t border-gray-700">
+                <h2 class="section-title">MY CONTACTS</h2>
+                <p class="max-w-xl mx-auto mb-8">
+                    I'm currently open to new opportunities and collaborations. If you have a project in mind or just want to say hello, feel free to reach out. I'll do my best to get back to you!
+                </p>
+
+                <!-- NEW: Contact Info Block -->
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8 text-lg text-gray-400 mb-8">
+                    <!-- EDIT YOUR EMAIL ADDRESS HERE -->
+                    <a href="mailto:youremail@example.com" class="flex items-center space-x-2 hover:text-primary transition-colors duration-300">
+                        <i data-feather="mail" class="w-5 h-5"></i>
+                        <span>dasecof50@gmail.com</span>
+                    </a>
+                    
+                    <!-- EDIT YOUR PHONE NUMBER HERE -->
+                    <a href="tel:+1234567890" class="flex items-center space-x-2 hover:text-primary transition-colors duration-300">
+                        <i data-feather="phone" class="w-5 h-5"></i>
+                        <span>+63 09615546633</span>
+                    </a>
+                </div>
+
+                <!-- EDIT YOUR CALL TO ACTION BUTTON TEXT AND LINK -->
+                <a href="mailto:youremail@example.com" class="bg-secondary text-white font-semibold px-8 py-3 rounded-lg hover:bg-secondary-dark transition-all duration-300 inline-block text-lg transform hover:-translate-y-1 hover:shadow-lg hover:shadow-teal-400/50">
+                    Contact Me
+                </a>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white py-8 relative z-10">
+            <div class="container mx-auto px-6 text-center">
+                <div class="flex justify-center space-x-6 mb-4">
+                    <!-- EDIT YOUR SOCIAL MEDIA LINKS -->
+                    <a href="#" aria-label="GitHub Profile" class="hover:text-secondary transition-all duration-300 transform hover:-translate-y-1 inline-block"><i data-feather="github"></i></a>
+                    <a href="#" aria-label="LinkedIn Profile" class="hover:text-secondary transition-all duration-300 transform hover:-translate-y-1 inline-block"><i data-feather="linkedin"></i></a>
+                    <a href="#" aria-label="Twitter Profile" class="hover:text-secondary transition-all duration-300 transform hover:-translate-y-1 inline-block"><i data-feather="twitter"></i></a>
+                </div>
+                <!-- EDIT YOUR NAME AND YEAR -->
+                <p class="text-gray-400">&copy; 2025 Fritz Gerald Daseco. All Rights Reserved.</p>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Project Modal -->
+    <div id="project-modal-overlay" class="modal-overlay">
+        <div id="project-modal-content" class="modal-content overflow-hidden">
+            <button id="modal-close-button" class="modal-close p-2 rounded-full hover:bg-gray-700 transition-colors">
+                <i data-feather="x" class="w-6 h-6"></i>
+            </button>
+            <img id="modal-image" src="" alt="Project Image" class="w-full max-h-96 object-cover rounded-t-xl mb-6">
+            <div class="p-6">
+                <h3 id="modal-title" class="text-3xl font-bold mb-4"></h3>
+                <p id="modal-description" class="text-base text-gray-300 mb-6"></p>
+                <div id="modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
+                <div class="flex space-x-4">
+                    <a id="modal-live-demo" href="#" class="text-primary hover:underline font-medium">Live Demo</a>
+                    <a id="modal-github" href="#" class="text-gray-400 hover:underline font-medium">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Feather Icons Initialization ---
+        feather.replace();
+
+        // --- Mobile Menu Toggle ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuLinks = mobileMenu.getElementsByTagName('a');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        for (let link of mobileMenuLinks) {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        }
+        
+        // --- Animate sections on scroll ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                } else {
+                    entry.target.classList.remove('is-visible');
+                }
+            });
+        }, {
+            threshold: 0.1 // Trigger when 10% of the element is visible
+        });
+
+        const sectionsToAnimate = document.querySelectorAll('.fade-in-section');
+        sectionsToAnimate.forEach(section => {
+            observer.observe(section);
+        });
+
+        // --- Header transparency on scroll ---
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('bg-gray-900/80', 'backdrop-blur-md', 'shadow-lg');
+            } else {
+                header.classList.remove('bg-gray-900/80', 'backdrop-blur-md', 'shadow-lg');
+            }
+        });
+
+        // --- Welcome Page Functionality ---
+        const welcomePage = document.getElementById('welcome-page');
+        const mainContent = document.getElementById('main-content');
+        const proceedButton = document.getElementById('proceed-button');
+
+        proceedButton.addEventListener('click', () => {
+            welcomePage.classList.add('hidden');
+            
+            setTimeout(() => {
+                mainContent.classList.add('visible');
+                document.body.style.overflowY = 'auto';
+                updateProgressBar();
+            }, 500);
+        });
+
+        // --- Progress Bar Functionality ---
+        const progressBar = document.getElementById('progress-bar');
+        const body = document.body;
+        const html = document.documentElement;
+
+        function updateProgressBar() {
+            const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+            const winHeight = window.innerHeight;
+            const scrollPosition = window.scrollY;
+
+            const scrolledPercentage = (scrollPosition / (docHeight - winHeight)) * 100;
+            
+            if (scrolledPercentage > 0) {
+                progressBar.style.width = scrolledPercentage + '%';
+            } else {
+                progressBar.style.width = '0%';
+            }
+        }
+
+        document.body.style.overflowY = 'hidden';
+
+        window.addEventListener('scroll', updateProgressBar);
+        
+        // --- AI Assistant Functionality ---
+        const startChatButton = document.getElementById('start-chat-button');
+        const aiIntro = document.getElementById('ai-intro');
+        const aiChatInterface = document.getElementById('ai-chat-interface');
+        const chatLog = document.getElementById('chat-log');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        // Extract content to pass to the AI as context
+        const aboutContent = `
+            About Me:
+            Name: FritzyBoy, Fritz Gerald Daseco
+            Title: Creative Web Developer & BSIT STUDENT
+            Bio: I am a passionate web developer with a love for creating beautiful, intuitive, and high-performance web applications. My journey into the world of code started with a simple "Hello, World!" and has since grown into a full-fledged passion for technology and design. I specialize in front-end development using modern technologies like React and Tailwind CSS, but I'm always eager to learn new things. When I'm not coding, you can find me exploring new hiking trails, trying out new coffee shops, or reading a good book.
+            Skills: HTML5, CSS3 & Tailwind, JavaScript (ES6+), React, UI/UX Design.
+        `;
+        
+        const projectsContent = `
+            Projects:
+            Project Title One: A brief description of the project. What problem does it solve? What technologies were used? Keep it concise and impactful.
+            Technologies: React, Firebase
+
+            Project Title Two: This is another project where I explored data visualization using D3.js to create interactive charts for a client.
+            Technologies: D3.js, Node.js
+
+            Project Title Three: A mobile-first e-commerce storefront built with a focus on performance and accessibility. It was a great learning experience.
+            Technologies: Next.js, Stripe
+        `;
+
+        const systemInstruction = `
+            You are Fritzy.Ai, a helpful and friendly AI assistant for Fritz Gerald Daseco's personal portfolio website. Your purpose is to provide information about him based *only* on the content provided to you. You should answer questions about his skills, projects, and bio. If you are asked a question that is outside the scope of the provided information (e.g., questions about the future, real-time events, or personal opinions not mentioned), you must politely decline to answer and state that your knowledge is limited to the information available on this portfolio page. Be concise and professional.
+            
+            Here is the information you have access to:
+            
+            ${aboutContent}
+            
+            ${projectsContent}
+        `;
+
+        async function getAiResponse(message) {
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: message }] }],
+                systemInstruction: {
+                    parts: [{ text: systemInstruction }]
+                }
+            };
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+                
+                const result = await response.json();
+                const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                if (text) {
+                    return text;
+                } else {
+                    console.error('API response was empty or malformed:', result);
+                    return "Sorry, I couldn't generate a response. Please try again.";
+                }
+
+            } catch (error) {
+                console.error('Error fetching AI response:', error);
+                return "Fritz Gerald Daseco is a 1st year BSIT student at the University Of AMA, and pursuing AI enchancement.";
+            }
+        }
+        
+        function createMessageElement(text, sender) {
+            const messageEl = document.createElement('div');
+            messageEl.classList.add('message', sender);
+            messageEl.textContent = text;
+            return messageEl;
+        }
+
+        function showLoadingIndicator() {
+            const loadingEl = document.createElement('div');
+            loadingEl.id = 'loading-indicator';
+            loadingEl.classList.add('message', 'ai', 'loading-dots', 'flex', 'items-center', 'space-x-1');
+            loadingEl.innerHTML = `
+                <span class="w-2 h-2 bg-primary rounded-full inline-block"></span>
+                <span class="w-2 h-2 bg-primary rounded-full inline-block"></span>
+                <span class="w-2 h-2 bg-primary rounded-full inline-block"></span>
+            `;
+            chatLog.appendChild(loadingEl);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        function hideLoadingIndicator() {
+            const loadingEl = document.getElementById('loading-indicator');
+            if (loadingEl) {
+                loadingEl.remove();
+            }
+        }
+
+        async function handleSendMessage() {
+            const message = userInput.value.trim();
+            if (message === '') return;
+
+            // Add user message to chat log
+            chatLog.appendChild(createMessageElement(message, 'user'));
+            userInput.value = '';
+            chatLog.scrollTop = chatLog.scrollHeight;
+            
+            showLoadingIndicator();
+
+            // Get and display AI response
+            const aiResponse = await getAiResponse(message);
+            hideLoadingIndicator();
+            chatLog.appendChild(createMessageElement(aiResponse, 'ai'));
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        function showChatInterface() {
+            aiIntro.classList.add('hidden');
+            aiChatInterface.classList.remove('hidden');
+            
+            // Add initial greeting from AI
+            chatLog.appendChild(createMessageElement('Hello there! I am Fritzy.Ai, your personal assistant. I can answer questions about Fritz\'s skills, projects, and background. What would you like to know?', 'ai'));
+        }
+
+        startChatButton.addEventListener('click', showChatInterface);
+        sendButton.addEventListener('click', handleSendMessage);
+        userInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevents new line in input field
+                handleSendMessage();
+            }
+        });
+
+        // --- Project Modal Functionality ---
+        const projectCards = document.querySelectorAll('.project-card');
+        const modalOverlay = document.getElementById('project-modal-overlay');
+        const modalCloseButton = document.getElementById('modal-close-button');
+        const modalImage = document.getElementById('modal-image');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDescription = document.getElementById('modal-description');
+        const modalTags = document.getElementById('modal-tags');
+        const modalLiveDemo = document.getElementById('modal-live-demo');
+        const modalGithub = document.getElementById('modal-github');
+
+        // Project Data (EDIT THIS TO ADD MORE PROJECTS)
+        const projects = {
+            'project-1': {
+                image: 'https://www.simplilearn.com/ice9/free_resources_article_thumb/Cutting_Edge_Innovative_AI_Project_Ideas.jpg',
+                title: 'AI ENCHANCEMENT',
+                description: 'Enchancing AI, for its fully potential and maintaining its accuracy, while developing.',
+                tags: ['React', 'Firebase'],
+                liveDemo: '#',
+                github: '#'
+            },
+            'project-2': {
+                image: 'https://blog.latium.org/wp-content/uploads/2022/09/2e948896757753.5eb58c727d672-1024x708.png',
+                title: 'UI DESIGN',
+                description: 'Designing Ui for Web or Applications, to make it more user friendly and interactive',
+                tags: ['D3.js', 'Node.js'],
+                liveDemo: '#',
+                github: '#'
+            },
+            'project-3': {
+                image: 'https://thfvnext.bing.com/th?id=OIF.edK%2b8Kq9mGDT%2bAGxuWFmAg&cb=thfvnext&rs=1&pid=ImgDetMain&o=7&rm=3',
+                title: 'FLood Control',
+                description: 'This projects allow me to buy some luxury cars and other things using peoples money.HAHAHAHAHA LMAO',
+                tags: ['Next.js', 'Stripe'],
+                liveDemo: '#',
+                github: '#'
+            }
+        };
+
+        function showProjectModal(projectData) {
+            modalImage.src = projectData.image;
+            modalTitle.textContent = projectData.title;
+            modalDescription.textContent = projectData.description;
+            
+            // Clear old tags and add new ones
+            modalTags.innerHTML = '';
+            projectData.tags.forEach(tag => {
+                const tagEl = document.createElement('span');
+                tagEl.classList.add('text-xs', 'bg-gray-700', 'text-gray-300', 'px-2', 'py-1', 'rounded-md');
+                tagEl.textContent = tag;
+                modalTags.appendChild(tagEl);
+            });
+
+            modalLiveDemo.href = projectData.liveDemo;
+            modalGithub.href = projectData.github;
+
+            modalOverlay.classList.add('visible');
+            document.body.style.overflow = 'hidden'; // Prevents scrolling on the main page
+        }
+
+        function hideProjectModal() {
+            modalOverlay.classList.remove('visible');
+            document.body.style.overflow = 'auto'; // Re-enables scrolling
+        }
+
+        projectCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const projectId = card.dataset.project;
+                const projectData = projects[projectId];
+                if (projectData) {
+                    showProjectModal(projectData);
+                }
+            });
+        });
+
+        modalCloseButton.addEventListener('click', hideProjectModal);
+        
+        // Close modal when clicking outside the content
+        modalOverlay.addEventListener('click', (event) => {
+            if (event.target === modalOverlay) {
+                hideProjectModal();
+            }
+        });
+
+    </script>
+</body>
+</html>
